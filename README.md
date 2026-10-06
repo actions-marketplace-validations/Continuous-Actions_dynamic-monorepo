@@ -1,9 +1,10 @@
 # dynamic-monorepo
 
+<!-- Scorecard URLs are case-sensitive: keep the org login "Continuous-Actions". -->
 [![CI](https://github.com/continuous-actions/dynamic-monorepo/actions/workflows/ci.yml/badge.svg)](https://github.com/continuous-actions/dynamic-monorepo/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/continuous-actions/dynamic-monorepo?sort=semver)](https://github.com/continuous-actions/dynamic-monorepo/releases)
 [![Marketplace](https://img.shields.io/badge/marketplace-dynamic--monorepo-blue?logo=github)](https://github.com/marketplace/actions/dynamic-monorepo)
-[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/continuous-actions/dynamic-monorepo/badge)](https://scorecard.dev/viewer/?uri=github.com/continuous-actions/dynamic-monorepo)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Continuous-Actions/dynamic-monorepo/badge)](https://scorecard.dev/viewer/?uri=github.com/Continuous-Actions/dynamic-monorepo)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 **Build, test and deploy only the projects a change affects. No config file needed.**
@@ -11,6 +12,8 @@
 ![A pull request changes libs/shared; dynamic-monorepo detects five projects, selects shared plus the two projects that depend on it, and skips the rest](docs/assets/hero.png)
 
 `dynamic-monorepo` reads the git diff, finds the projects in your repository on its own (from `package.json`, `go.mod`, `Dockerfile` and similar files), follows the dependencies between them, and gives you JSON lists for a GitHub Actions matrix. Change a shared library and everything that uses it is rebuilt. Change a Dockerfile and that image is rebuilt. The job summary says why each project was picked.
+
+**In use:** [rajadilipkolli/spring-boot-microservices-series-v2](https://github.com/rajadilipkolli/spring-boot-microservices-series-v2/pull/1775) builds its services with it, and [uni-helper/create-uni](https://github.com/uni-helper/create-uni/pull/194) runs the path-filter audit. Gaps the audit found have been fixed in [rhesis](https://github.com/rhesis-ai/rhesis/pull/2903), [GitWand](https://github.com/devlint/GitWand/pull/210) and [nagiyu-platform](https://github.com/nagiyu/nagiyu-platform/issues/3966).
 
 **See it live:** the [demo monorepo](https://github.com/continuous-actions/dynamic-monorepo-demo) (Node, Go and Docker, no config) has pull requests showing what runs for a shared-library change, a Dockerfile change and a docs-only change.
 
@@ -134,6 +137,8 @@ It annotates the workflow file and lists in the job summary:
 - a `.github/workflows/...` entry that no longer exists
 
 Run it locally with `npx github:continuous-actions/dynamic-monorepo audit`. On a sample of active public monorepos, about a third had at least one of these problems.
+
+**Prefer not to add an action?** `npx github:continuous-actions/dynamic-monorepo audit --fix` writes the missing folders into those `paths:` lists and adds `/**` to bare directories, then you commit the diff. It edits only the `paths` lists and keeps your comments and quoting. A list it can't edit safely (YAML anchors, multi-line entries) is reported instead, along with stale workflow references, which need a human.
 
 ## What it detects
 
